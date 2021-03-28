@@ -186,6 +186,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+
+
     new ItemMenu(
         "img/tabs/vegy.jpg",
         "vegy",
@@ -225,12 +227,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     forms.forEach(item => {
-        postData(item)
+        bindPostData(item)
     })
 
-    function postData(form) {
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            console.log('submit')
 
             const statusMessage = document.createElement("img");
             statusMessage.src = message.loading;
@@ -246,22 +249,29 @@ document.addEventListener('DOMContentLoaded', function () {
             // request.setRequestHeader('Content-type', 'application/json');
 
 
+            const postData = async (url, data) => {
+                const res = await fetch(url, {
+                    method: 'POST',
+                     headers: {
+                         'Content-type': 'application/json'
+                     },
+                    body: data
+                })
+                return await res.json();
+            }
+
 
             const formData = new FormData(form);
-            // const obj = {};
-            // formData.forEach((value, key) => {
-            //     obj[key] = value
-            // })
-            // const json = JSON.stringify(obj)
+             // const obj = {};
+             // formData.forEach((value, key) => {
+             //     obj[key] = value
+             // })
+             const json = JSON.stringify(Object.fromEntries(formData.entries()))
+             // console.log(formData)
+             // console.log(json)
 
-            fetch('server.php', {
-                method: 'POST',
-                // headers: {
-                //     'Content-type': 'application/json'
-                // },
-                body: formData
-            }).then(data => data.text()
-            ).then(data => {
+            postData('http://localhost:3000/requests', json)
+                .then(data => {
                 console.log(data);
                 showTanksModal(message.success);
                 statusMessage.remove()
@@ -306,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 2000)
 
     }
-
 
 })
 
