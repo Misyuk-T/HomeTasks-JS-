@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let modal = document.querySelector('.modal'),
         btnShowModal = document.querySelectorAll('[data-show]'),
         modalClose = modal.querySelector('.modal__close'),
-        showModalAfterTime = setTimeout(showModal, 300000);
+        showModalAfterTime = setTimeout(showModal, 30000);
 
     function showModal() {
         if (modal.classList.contains('hide')) {
@@ -121,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.documentElement.style.overflow = ''
         }
         clearTimeout(showModalAfterTime);
+        document.removeEventListener('scroll', showAfterPageEnd);
     }
 
     btnShowModal.forEach((item) => {
@@ -146,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let element = document.documentElement;
         if (element.scrollHeight - element.scrollTop === element.clientHeight) {
             showModal();
-            document.removeEventListener('scroll', showAfterPageEnd)
         }
     }
 
@@ -154,11 +154,11 @@ document.addEventListener('DOMContentLoaded', function () {
 //================================
 
     class ItemMenu {
-        constructor(img, alt, title, text, price, parent) {
+        constructor(img, altimg, title, descr, price, parent) {
             this.img = img;
-            this.alt = alt;
+            this.altimg = altimg;
             this.title = title;
-            this.text = text;
+            this.descr = descr;
             this.price = price;
             this.parent = document.querySelector(parent);
             this.transferToUAH();
@@ -172,9 +172,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const element = document.createElement('div'),
                 getClassElement = element.classList.add('menu__item');
             element.innerHTML = `
-                            <img src=${this.img} alt=${this.alt}>
+                            <img src=${this.img} alt=${this.altimg}>
                                 <h3 class="menu__item-subtitle">${this.title}</h3>
-                                <div class="menu__item-descr">${this.text}</div>
+                                <div class="menu__item-descr">${this.descr}</div>
                                     <div class="menu__item-divider"></div>
                                 <div class="menu__item-price">
                                     <div class="menu__item-cost">Цена:</div>
@@ -186,34 +186,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // const getResource = async (url) => {
+    //     const res = await fetch(url);
+    //     if (!res.ok) {
+    //         throw new Error(`Couldn't fetch ${url},status: ${res.status}`);
+    //     }
+    //     return await res.json();
+    // }
+    // getResource(`http://localhost:3000/menu`)
+    //     .then(data => {
+    //         data.forEach(({img, alt, title, descr, price}) => {
+    //             new ItemMenu(img, alt, title, descr, price, '.menu__field .container').render();
+    //         });
+    //         console.log(data)
+    //     });
 
-
-    new ItemMenu(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        `Меню "Фитнес"`,
-        `Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
-        14,
-        '.menu__field .container'
-    ).render();
-
-    new ItemMenu(
-        "img/tabs/elite.jpg",
-        "elite",
-        `Меню “Премиум”`,
-        `В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!`,
-        24,
-        '.menu__field .container'
-    ).render();
-
-    new ItemMenu(
-        "img/tabs/post.jpg",
-        "post",
-        `Меню "Постное"`,
-        `Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.`,
-        17,
-        '.menu__field .container'
-    ).render();
+    axios.get('http://localhost:3000/menu')
+        .then(data => {
+            data.data.forEach(({img, alt, title, descr, price}) => {
+                new ItemMenu(img, alt, title, descr, price, '.menu__field .container').render();
+            });
+            console.log(data)
+        })
 
 
 // post form data
@@ -252,9 +246,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const postData = async (url, data) => {
                 const res = await fetch(url, {
                     method: 'POST',
-                     headers: {
-                         'Content-type': 'application/json'
-                     },
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
                     body: data
                 })
                 return await res.json();
@@ -262,20 +256,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             const formData = new FormData(form);
-             // const obj = {};
-             // formData.forEach((value, key) => {
-             //     obj[key] = value
-             // })
-             const json = JSON.stringify(Object.fromEntries(formData.entries()))
-             // console.log(formData)
-             // console.log(json)
+            // const obj = {};
+            // formData.forEach((value, key) => {
+            //     obj[key] = value
+            // })
+            const json = JSON.stringify(Object.fromEntries(formData.entries()))
+            // console.log(formData)
+            // console.log(json)
 
             postData('http://localhost:3000/requests', json)
                 .then(data => {
-                console.log(data);
-                showTanksModal(message.success);
-                statusMessage.remove()
-            }).catch(() => {
+                    console.log(data);
+                    showTanksModal(message.success);
+                    statusMessage.remove()
+                }).catch(() => {
                 console.error(showTanksModal(message.failure))
             }).finally(() => {
                 form.reset()
@@ -295,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showTanksModal(message) {
         let modalDialog = document.querySelector('.modal__dialog');
-            modalDialog.classList.add('hide');
+        modalDialog.classList.add('hide');
 
         let thanksBlock = document.createElement('div');
         thanksBlock.classList.add('modal__dialog');
@@ -309,13 +303,223 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.modal').append(thanksBlock);
 
         setTimeout(() => {
-                modalDialog.classList.add('show');
-                modalDialog.classList.remove('hide');
+            modalDialog.classList.add('show');
+            modalDialog.classList.remove('hide');
 
-                thanksBlock.remove();
+            thanksBlock.remove();
         }, 2000)
 
     }
+
+    //slick slider
+    //=========================================
+
+    let sliderWrapper = document.querySelector('.offer__slider-wrapper'),
+        sliderInner = sliderWrapper.querySelector('.offer__slider-inner'),
+        sliderItems = sliderWrapper.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        current = document.querySelector('#current'),
+        total = document.querySelector('#total'),
+        innerWidth = window.getComputedStyle(sliderWrapper).width,
+        width = sliderItems.length * 100 + `%`,
+        indexSlide = 1,
+        transformSlide = 0,
+        itemOffset = 100 / sliderItems.length
+
+
+    sliderWrapper.style.overflow = 'hidden';
+    sliderInner.style.cssText = `display: flex; width: ${width}; transition: all .4s`
+
+    if (10 > sliderItems.length) {
+        total.textContent = `0${sliderItems.length}`
+    } else {
+        total.textContent = sliderItems.length
+    }
+
+    function nextSlide() {
+        if (transformSlide == itemOffset * (sliderItems.length - 1)) {
+            transformSlide = 0;
+            indexSlide = 0;
+        } else {
+            transformSlide += itemOffset;
+        }
+        sliderInner.style.transform = `translateX(-${transformSlide}%)`
+        plusCurrentValue();
+
+        dots.forEach(dot => dot.style.opacity = '.5');
+        dots[indexSlide - 1].style.opacity = 1;
+    }
+
+    function prevSlide() {
+        if (transformSlide == 0) {
+            transformSlide = itemOffset * (sliderItems.length - 1);
+            indexSlide = sliderItems.length + 1;
+        } else {
+            transformSlide -= itemOffset;
+        }
+        sliderInner.style.transform = `translateX(-${transformSlide}%)`
+        minusCurrentValue();
+
+        dots.forEach(dot => dot.style.opacity = '.5');
+        dots[indexSlide - 1].style.opacity = 1;
+    }
+
+    function plusCurrentValue() {
+        if (indexSlide < 10) {
+            current.textContent = `0${++indexSlide}`;
+        } else {
+            current.textContent = ++indexSlide;
+        }
+    }
+
+    function minusCurrentValue() {
+        if (indexSlide < 10) {
+            current.textContent = `0${--indexSlide}`;
+        } else {
+            current.textContent = --indexSlide;
+        }
+    }
+
+    next.addEventListener('click', () => {
+        nextSlide();
+    })
+    prev.addEventListener('click', () => {
+        prevSlide();
+    })
+
+
+    sliderWrapper.style.position = 'relative';
+    const indicators = document.createElement(`ol`),
+        dots = [];
+    indicators.classList.add('carousel-indicators');
+
+    indicators.style.cssText = `
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 15;
+        display: flex;
+        justify-content: center;
+        margin-right: 15%;
+        margin-left: 15%;
+        list-style: none;`
+    sliderWrapper.append(indicators);
+
+    for (let i = 0; i < sliderItems.length; i++) {
+        const dot = document.createElement('li');
+
+        dot.setAttribute('data-slide-to', i + 1);
+        dot.style.cssText = `
+            box-sizing: content-box;
+            flex: 0 1 auto;
+            width: 30px;
+            height: 6px;
+            margin-right: 3px;
+            margin-left: 3px;
+            cursor: pointer;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            opacity: .5;
+            transition: opacity .6s ease;`;
+
+        if (i == 0) {
+            dot.style.opacity = 1;
+        }
+        indicators.append(dot)
+        dots.push(dot)
+    }
+
+    dots.forEach(dat => {
+        dat.addEventListener(`click`, e => {
+            let slideTo = e.target.getAttribute('data-slide-to');
+            transformSlide = (slideTo - 1) * itemOffset
+            sliderInner.style.transform = `translateX(-${transformSlide}%)`
+            indexSlide = slideTo
+
+            if (indexSlide < 10) {
+                current.textContent = `0${indexSlide}`;
+            } else {
+                current.textContent = indexSlide;
+            }
+
+            dots.forEach(dot => dot.style.opacity = '.5');
+            dots[indexSlide - 1].style.opacity = 1;
+        })
+    })
+
+
+    //calculator
+    //=========================================
+
+    let male = document.querySelector('#male'),
+        female = document.querySelector('#female'),
+        activeParent = document.querySelector('.calculating__choose_big'),
+        calculatingResult = document.querySelector('.calculating__result span'),
+        height, weight, age, active = 1.375, sex = 6;
+
+    function setResult() {
+        if (height && weight && age && active && sex) {
+            calculatingResult.textContent = Math.round(((10 * weight) + (6.25 * height) - (5 * age) - sex) * active);
+        } else calculatingResult.textContent = '____'
+
+    }
+    setResult();
+
+    function getStaticInformation(parent) {
+        let itemsParent = parent.querySelectorAll("div");
+
+        itemsParent.forEach((item) => {
+            item.addEventListener('click', (e) => {
+                let target = e.target
+
+                itemsParent.forEach((i) => {
+                    i.classList.remove('calculating__choose-item_active');
+                })
+                target.classList.add('calculating__choose-item_active')
+
+
+                if (target.getAttribute('data-active')) {
+                    active = target.getAttribute('data-active');
+                } else if (target.getAttribute('id') === 'female') {
+                    sex = 165
+                } else {
+                    sex = 6
+                }
+                setResult();
+            })
+        })
+    }
+
+    getStaticInformation(document.querySelector('.calculating__choose_big'));
+    getStaticInformation(document.querySelector('#gender'));
+    
+    function getDynamicInformation(parent) {
+        let dynamicInputs = parent.querySelectorAll('input');
+
+        dynamicInputs.forEach((item) => {
+            item.addEventListener('input', () => {
+                switch(item.getAttribute('id')) {
+                    case 'height':
+                        height = +item.value;
+                        break;
+                    case 'weight':
+                        weight = +item.value;
+                        break;
+                    case 'age':
+                        age = +item.value;
+                        break;
+                }
+                setResult();
+            })
+        })
+    }
+
+    getDynamicInformation(document.querySelector('.calculating__choose_medium'))
+
 
 })
 
