@@ -1,6 +1,7 @@
-function modalWindow() {
-    // modal window
+// modal window
 //================================
+
+function modalWindow() {
 
     let modal = document.querySelector('.modal'),
         btnShowModal = document.querySelectorAll('[data-show]'),

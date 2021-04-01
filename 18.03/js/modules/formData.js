@@ -1,6 +1,8 @@
-function postFormData() {
-    / post form data
+
+// post form data
 //================================
+
+function postFormData() {
 
     let forms = document.querySelectorAll('form'),
         message = {
@@ -97,9 +99,7 @@ function postFormData() {
 
             thanksBlock.remove();
         }, 2000)
-
     }
-
 }
 
 module.exports = postFormData();
