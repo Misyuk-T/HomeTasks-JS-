@@ -16,34 +16,8 @@ const tabs = require('./modules/tabs'),
     slider();
 })
 
-const arr = [3000, 200, 2000, 5000, 6000] // 7000
-
-    // arr.map((item, i)=> {
-    //     console.log(item + 200)
-    //     console.log(i)
-    // })
-
-    // let checkF = item => item % 2 === 0
-    // let something = arr.some(checkF)
-
-// const reducer = (accumulator, item ) => accumulator + item
-// arr.reduce(reducer)
-// console.log(arr.reduce(reducer))
-
-// arr.forEach((item, i) => {
-//     for (let j = 0; j < arr.length; j++) {
-//         if (item + arr[j] == 7000) {
-//             console.log(true)
-//         }
-//     }
-// })
 
 
-let reducer = (accumulate, item) => accumulate + item
-
-
-
-console.log(arr.reduce(reducer))
 
 
 
