@@ -2,7 +2,8 @@
 //indexOf, найстаріша фігня, повертає - при false та індекс при tru але дає можливість проставити пошук з певного індексу
 // includes, ES7 аргументи як і indexOf, але завжди повертає boolean
 // find, ES6 перебор масива, повертає елемент або -1
-// findIndex,  ES6 перебор масива, повертає індекс або -1, не можна вказати з якого індексу починати пошук, але можна вписати більше умов + можна шукати свойства об'єкту
+// findIndex,  ES6 перебор масива, повертає індекс або -1, не можна вказати з якого індексу починати пошук, але можна вписати більше умов + можна шукати свойства об'єкту=
+//filter - перевіряє все і якщо підходить умова (тру) додає в масив і продовжує далі
 
 //================
 
@@ -51,7 +52,7 @@ function palindrome(string) {
     }
 }
 
-//console.log(palindrome('anna'));
+console.log(palindrome('anna'));
 
 
 //================
@@ -90,7 +91,6 @@ function compare(array1, array2) {
     });
 }
 
-
 function anagram(word1, word2) {
     if (!(word1.length === word2.length)) {
         return false
@@ -102,7 +102,7 @@ function anagram(word1, word2) {
     return (compare(normalizeW1, normalizeW2));
 }
 
-// console.log(anagram('some', 'mose'));
+ console.log(anagram('vitalik', 'likvita'));
 
 
 //================
@@ -172,33 +172,138 @@ let SimpleNumber = n => {
 
     let SimpleArr = [];
 
-    itarator:  for (let i = 2; i <= n; i++) {
+    iterator:  for (let i = 2; i <= n; i++) {
 
         for (let j = 2; j < i; j++) {
 
             if (i % j === 0) {
-                continue itarator
+                continue iterator
             } else if (!SimpleArr.includes(i)) {
                 SimpleArr.push(i);
             }
-
         }
     }
 
-    console.log(SimpleArr);
+    //console.log(SimpleArr);
 }
 
 
-// SimpleNumber(22);
-//let n = 12;
+ SimpleNumber(18);
+let n = 12;
 
 checkSimple:
     for (let i = 2; i <= n; i++) {
         for (let j = 2; j < i; j++) {
             if (i % j === 0) continue checkSimple
         }
-        console.log(i);
+        //console.log(i);
     }
+
+//======
+// БІНАРНИЙ ПОШУК
+//======
+
+let coolArr1 = [0, 1, 2, 10, 11, 12, 13, 14, 18];
+
+function search(arr, target) {
+    let left = 0,
+        right = arr.length - 1,
+        mid;
+
+    while (left <= right) {
+        mid = Math.round((right - left) / 2 + left);
+        debugger
+        if (target > arr[mid]) {
+            left = mid
+        } else if (target < arr[mid]) {
+            right = mid
+        } else if (arr[mid] === target) {
+            return mid
+        }
+
+
+    }
+}
+
+//console.log(search(coolArr1, 14))
+
+//======
+// ВСІ ФОЛСИ
+//======
+
+/*console.log(
+    Boolean(''),
+    Boolean(null),
+    Boolean(undefined),
+    Boolean(0),
+    Boolean(NaN),
+
+)*/
+
+
+//======
+// XMLHttpRequest
+//======
+
+const userUrl = "https://jsonplaceholder.typicode.com/users";
+
+let xhr = new XMLHttpRequest(); //створюємо конструктором новий запит (не може прйимати аргументів)
+xhr.open("GET", userUrl); //передаємо аргументи, в методі GET третій аргумент (body) не обов'язковий
+xhr.send(); //передаємо запит на сервер
+
+xhr.onload = function() {
+    if (xhr.status !== 200) { // анализируем HTTP-статус ответа, если статус не 200, то произошла ошибка
+       // console.log(`Ошибка ${xhr.status}: ${xhr.statusText}`); // Например, 404: Not Found
+    } else { // если всё прошло гладко, выводим результат
+        // console.log(`Готово, получили ${xhr.response.length} байт`); // response -- это ответ сервера
+    }
+};
+
+xhr.onprogress = function(event) { //відслідковуємо прогрес отримання данних
+    if (event.lengthComputable) {  // event.lengthComputable = равно true, если сервер присылает заголовок Content-Length
+        // console.log(`Получено ${event.loaded} из ${event.total} байт`);
+        // event.loaded - количество загруженных байт
+        // event.total - количество байт всего (только если lengthComputable равно true)
+    } else {
+        // console.log(`Получено ${event.loaded} байт`); // если в ответе нет заголовка Content-Length
+    }
+
+};
+
+xhr.onerror = function() {
+    console.log("Запрос не удался");
+};
+
+
+//======
+// fetch
+// fetch не позволяет отслеживать прогресс отправки, то мы будем использовать XMLHttpRequest.
+
+fetch("https://jsonplaceholder.typicode.com/users", {
+    method: "GET",
+    headers: {
+        "Content-type": "application/json",
+    }
+})
+    .then(response => response.ok ? response.json() : console.error("Error" + response.status) )
+    //стрілочні функції завжди неявно повертають значення, в іншому випадку потрібно самому прописати і повернути проміс
+    //.then(data => console.log(data))
+    .catch(error => console.log(error))  //onRejected для того, щоб зловити якусь невідомуу помилку
+
+//======
+// fetch POST
+//
+data = "some text"
+
+fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    headers: {
+        "Content-tyoe": "application/json"
+    },
+    body: JSON.stringify(data),
+})
+    .then(data => console.log(data))
+
 
 
 
