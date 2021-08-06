@@ -1,5 +1,5 @@
 //================
-//indexOf, найстаріша фігня, повертає - при false та індекс при tru але дає можливість проставити пошук з певного індексу
+//indexOf, найстаріша фігня, повертає -1 при false та індекс при tru але дає можливість проставити пошук з певного індексу
 // includes, ES7 аргументи як і indexOf, але завжди повертає boolean
 // find, ES6 перебор масива, повертає елемент або -1
 // findIndex,  ES6 перебор масива, повертає індекс або -1, не можна вказати з якого індексу починати пошук, але можна вписати більше умов + можна шукати свойства об'єкту=
@@ -102,7 +102,7 @@ function anagram(word1, word2) {
     return (compare(normalizeW1, normalizeW2));
 }
 
- console.log(anagram('vitalik', 'likvita'));
+console.log(anagram('vitalik', 'likvita'));
 
 
 //================
@@ -188,7 +188,7 @@ let SimpleNumber = n => {
 }
 
 
- SimpleNumber(18);
+SimpleNumber(18);
 let n = 12;
 
 checkSimple:
@@ -251,15 +251,15 @@ let xhr = new XMLHttpRequest(); //створюємо конструктором 
 xhr.open("GET", userUrl); //передаємо аргументи, в методі GET третій аргумент (body) не обов'язковий
 xhr.send(); //передаємо запит на сервер
 
-xhr.onload = function() {
+xhr.onload = function () {
     if (xhr.status !== 200) { // анализируем HTTP-статус ответа, если статус не 200, то произошла ошибка
-       // console.log(`Ошибка ${xhr.status}: ${xhr.statusText}`); // Например, 404: Not Found
+        // console.log(`Ошибка ${xhr.status}: ${xhr.statusText}`); // Например, 404: Not Found
     } else { // если всё прошло гладко, выводим результат
         // console.log(`Готово, получили ${xhr.response.length} байт`); // response -- это ответ сервера
     }
 };
 
-xhr.onprogress = function(event) { //відслідковуємо прогрес отримання данних
+xhr.onprogress = function (event) { //відслідковуємо прогрес отримання данних
     if (event.lengthComputable) {  // event.lengthComputable = равно true, если сервер присылает заголовок Content-Length
         // console.log(`Получено ${event.loaded} из ${event.total} байт`);
         // event.loaded - количество загруженных байт
@@ -270,7 +270,7 @@ xhr.onprogress = function(event) { //відслідковуємо прогрес
 
 };
 
-xhr.onerror = function() {
+xhr.onerror = function () {
     console.log("Запрос не удался");
 };
 
@@ -285,7 +285,7 @@ fetch("https://jsonplaceholder.typicode.com/users", {
         "Content-type": "application/json",
     }
 })
-    .then(response => response.ok ? response.json() : console.error("Error" + response.status) )
+    .then(response => response.ok ? response.json() : console.error("Error" + response.status))
     //стрілочні функції завжди неявно повертають значення, в іншому випадку потрібно самому прописати і повернути проміс
     //.then(data => console.log(data))
     .catch(error => console.log(error))  //onRejected для того, щоб зловити якусь невідомуу помилку
@@ -304,13 +304,63 @@ fetch("https://jsonplaceholder.typicode.com/posts", {
 })
     .then(data => console.log(data))
 
+//вивести із масива унікальні фрукти в порядку частоти їх зустрічання
+
+let fruits = ["banana", "orange", "banana", "banana", "apple", "pineapple", "apple", "pumpkin", "lemon", "pumpkin", "corn"];
+
+const hashMap = {},
+    ourFruits = [];
 
 
+fruits.forEach(item => {
+    if (hashMap[item] === undefined) {
+        hashMap[item] = 0;
+    }
+    if (item in hashMap) {
+        hashMap[item] += 1;
+    }
+});
+
+objArr = Object.entries(hashMap);
+
+objArr.sort((a, b) => {
+    return a[1] - b[1]
+}).reverse();
+
+objArr.forEach((item) => {
+    ourFruits.push(item[0]);
+})
 
 
+//console.log(hashMap)
+//console.log(ourFruits)
 
 
+//======
+// Каррирование и замыкание
+//
+const {log} = console;
 
 
+function sum(a) {
+    return (b) => {
+        return (c) => {
+            return a + b + c
+        }
+    }
 
+}
+
+//sum(a, b, c)
+//sum(a, b)(c)
+let anotherF = sum(4)(3)(2);
+
+function incrementor(b) {
+    return function (a) {
+        return a + b
+    }
+}
+
+let callIncrementor = incrementor(1);
+console.log(callIncrementor(4))
 
